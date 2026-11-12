@@ -81,6 +81,8 @@ function computeStationTraffic(stations, timeFilter = -1) {
   });
 }
 
+let stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
+
 const bikeLaneStyle = {
   'line-color': '#32D400',  // A bright green using hex code
   'line-width': 5,          // Thicker lines
@@ -161,6 +163,9 @@ map.on('load', async () => {
     .attr('stroke', 'white') // Circle border color
     .attr('stroke-width', 1) // Circle border thickness
     .attr('opacity', 0.8) // Circle opacity
+    .style('--departure-ratio', (d) =>
+      stationFlow(d.departures / d.totalTraffic),
+    )
     .each(function (d) {
       // Add <title> for browser tooltips
       d3.select(this)
@@ -215,7 +220,10 @@ map.on('load', async () => {
     circles
       .data(filteredStations, (d) => d.short_name) // Ensure D3 tracks elements correctly
       .join('circle') // Ensure the data is bound correctly
-      .attr('r', (d) => radiusScale(d.totalTraffic)); // Update circle sizes
+      .attr('r', (d) => radiusScale(d.totalTraffic)) // Update circle sizes
+      .style('--departure-ratio', (d) =>
+        stationFlow(d.departures / d.totalTraffic),
+      );
   }
 
   timeSlider.addEventListener('input', updateTimeDisplay);

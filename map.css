@@ -24,9 +24,46 @@ body {
   pointer-events: none;
 
   circle {
-    fill: steelblue;
+    fill: var(--color);
     fill-opacity: 60%;
     stroke: white;
     pointer-events: auto;
+  }
+}
+
+#map circle,
+.legend > div {
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+}
+
+.legend {
+  display: flex;
+  gap: 1px;
+  margin-block: 1em;
+  align-self: stretch;
+
+  > div {
+    flex: 1;
+    padding: 0.4em 2em;
+    background: var(--color);
+    color: black;
+  }
+
+  > div:nth-child(1) {
+    text-align: left;
+  }
+
+  > div:nth-child(2) {
+    text-align: center;
+  }
+
+  > div:nth-child(3) {
+    text-align: right;
   }
 }
